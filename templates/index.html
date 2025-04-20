@@ -21,12 +21,21 @@
       <form action="/" method="POST">
         <textarea name="review" placeholder="Enter your review here...">{{ review or '' }}</textarea><br>
         <button class="analyze" type="submit">Analyze</button>
+
+        <!-- Client-side (empty input) error -->
         <div id="error-message" style="color: #E74C3C; font-weight: bold; margin-top: 15px; display: none;">
-          Please enter a review before analyzing.
+          ⚠️ Please enter a review before analyzing.
         </div>
+
+        <!-- Server-side (invalid/unknown input) error -->
+        {% if review and (not sentiment or sentiment == 'unknown') %}
+          <div style="color: #E74C3C; font-weight: bold; margin-top: 15px;">
+            ⚠️ Please enter a valid review to analyze.
+          </div>
+        {% endif %}
       </form>
 
-      {% if sentiment %}
+      {% if sentiment and sentiment != 'unknown' %}
         <div class="result show">
           <strong>Predicted Sentiment:</strong><br>
           {% if sentiment == 'positive' %}
@@ -35,8 +44,6 @@
             <span style="color: #E74C3C;">😞 Negative</span>
           {% elif sentiment == 'neutral' %}
             <span style="color: #BDC3C7;">😐 Neutral</span>
-          {% else %}
-            <span>❓ Unknown</span>
           {% endif %}
         </div>
       {% endif %}
